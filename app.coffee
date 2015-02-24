@@ -15,7 +15,7 @@ database = require('./js/models/index.js') false, (db) ->
 
 	Express.get '/', (req, res) -> 
 		res.header("Access-Control-Allow-Origin", "*")
-		res.send crypto.randomBytes(16).toString('hex')
+		res.send "Root"
 
 	routes = require('./js/controllers/index.js')(app)
 

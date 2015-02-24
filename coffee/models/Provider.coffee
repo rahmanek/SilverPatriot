@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) ->
-	return sequelize.define 'Region',
+	return sequelize.define 'Provider',
 		regionId:Sequelize.STRING
 		calendarYear:Sequelize.INTEGER
 		description: Sequelize.STRING

@@ -13,24 +13,21 @@ module.exports = (clean,callback) ->
 			host: match[3]
 			logging: true
 
-		console.log "Heroku Database"
 	else
-		dbInfo = JSON.parse process.env.patriotDb
-		sequelize = new Sequelize dbInfo.dbName, dbInfo.dbUser, dbInfo.dbPass,
+		dbInfo = JSON.parse process.env.pgDb
+		sequelize = new Sequelize 'patriot', dbInfo.dbUser, dbInfo.dbPass,
 			dialect: 'postgres',
 			port: dbInfo.dbPort
 
+		db = 
+			Region: require("./Region.js")(sequelize,Sequelize)
+			Payer: require("./Payer.js")(sequelize,Sequelize)
+			Provider: require("./Payer.js")(sequelize,Sequelize)
 
-		Region = require("./Region.js")(sequelize,Sequelize)
-		Payer = require("./Payer.js")(sequelize,Sequelize)
-
-		sequelize.sync
-			force: clean
-		.complete (err) ->
-			if !!err
-				console.log 'Database Failed to Authenticate'
-			else
-				db =
-					Region: Region
-					Payer: Payer
-				callback db
+	sequelize.sync
+		force: clean
+	.complete (err) ->
+		if !!err
+			console.log 'Database Failed to Authenticate'
+		else
+			callback db

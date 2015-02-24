@@ -1,5 +1,6 @@
 module.exports = (sequelize, Sequelize) ->
 	return sequelize.define 'Payer',
-		payerId: Sequelize.STRING
-		name: Sequelize.STRING
-		lng: Sequelize.DECIMAL
+		regionId:Sequelize.STRING
+		calendarYear:Sequelize.INTEGER
+		description: Sequelize.STRING
+		value: Sequelize.DECIMAL

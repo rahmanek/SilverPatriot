@@ -15,6 +15,8 @@ module.exports = (grunt) ->
 					expand: true
 					src: 'app.coffee'
 					ext: '.js'
+				,
+					'dbLoader/app.js':'dbLoader/app.coffee'
 				]
 
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
