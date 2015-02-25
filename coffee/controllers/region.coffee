@@ -10,10 +10,17 @@ module.exports = (app) ->
 				
 		.complete (err,record) ->
 
-			if !!err then directive: 'Error - ' + err
-			else if record.length == 0 then directive = "No Results"
-			else directive = "Affirmative"
+			app.db.RegionDetail.find
+				where:
+					regionId: req.query.regionId
 
-			res.send
-				directive: directive
-				results: record
+			.complete (errDescription,recordDescription) ->
+				if !!err or !!errDescription then directive: 'Error - ' + err + errDescription
+				else if record.length == 0 then directive = "No Results"
+				else directive = "Affirmative"
+
+				res.send
+					directive: directive 
+					description: recordDescription
+					results: record
+

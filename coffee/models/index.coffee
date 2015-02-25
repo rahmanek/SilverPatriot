@@ -21,6 +21,7 @@ module.exports = (clean,callback) ->
 
 		db = 
 			Region: require("./Region.js")(sequelize,Sequelize)
+			RegionDetail: require("./RegionDetail.js")(sequelize,Sequelize)
 			Payer: require("./Payer.js")(sequelize,Sequelize)
 			Provider: require("./Payer.js")(sequelize,Sequelize)
 
