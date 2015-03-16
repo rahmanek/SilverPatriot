@@ -3,23 +3,22 @@ module.exports = (app) ->
 
 	app.Express.get '/region', (req, res) -> 
 		res.header("Access-Control-Allow-Origin", "*")
-		app.db.Region.findAll
+		app.db.RegionData.findAll
 			where:
 				regionId: req.query.regionId
 				
-		.complete (err,record) ->
+		.complete (err,records) ->
 
 			app.db.RegionDetail.find
 				where:
 					regionId: req.query.regionId
 
-			.complete (errDescription,recordDescription) ->
-				if !!err or !!errDescription then directive: 'Error - ' + err + errDescription
-				else if record.length == 0 then directive = "No Results"
+			.complete (err2,records2) ->
+				if !!err or !!err2 then directive: 'Error - ' + err + err2
+				else if records.length == 0 then directive = "No Results"
 				else directive = "Affirmative"
 
 				res.send
-					directive: directive 
-					description: recordDescription
-					results: record
-
+					directive: directive
+					detail: records2
+					results: records

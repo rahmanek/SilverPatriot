@@ -19,11 +19,15 @@ module.exports = (clean,callback) ->
 			dialect: 'postgres',
 			port: dbInfo.dbPort
 
-		db = 
-			Region: require("./Region.js")(sequelize,Sequelize)
-			RegionDetail: require("./RegionDetail.js")(sequelize,Sequelize)
+		db =
 			Payer: require("./Payer.js")(sequelize,Sequelize)
-			Provider: require("./Payer.js")(sequelize,Sequelize)
+			Provider: require("./Provider.js")(sequelize,Sequelize)
+			Hospital: require("./Hospital.js")(sequelize,Sequelize)
+			BetosDetail: require("./BetosDetail.js")(sequelize,Sequelize)
+			ServiceDetail: require("./ServiceDetail.js")(sequelize,Sequelize)
+			ServiceData: require("./ServiceData.js")(sequelize,Sequelize)
+			RegionData: require("./RegionData.js")(sequelize,Sequelize)
+			RegionDetail: require("./RegionDetail.js")(sequelize,Sequelize)
 
 	sequelize.sync
 		force: clean
