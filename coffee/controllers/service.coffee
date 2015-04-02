@@ -30,62 +30,81 @@ module.exports = (app) ->
 			catLevel = 1
 		else queryStatus = false
 
-		if !req.query.year? or !queryStatus then send 'Invalid Query', [] 
-		else
+		console.log req.query.year? + queryStatus
+
+		if req.query.year? and queryStatus
 			app.db.ServiceDetail.findAll
 				where: detailQuery
 
 			.complete (err1, serviceDetail) ->
-				serviceArray = []
+				if serviceDetail.length == 0 then send("No Data", {})
+				else
+					serviceArray = []
 
-				for service in serviceDetail
-					serviceArray.push service.serviceCode
-				app.db.ServiceData.findAll
-					where:
-						serviceCode: serviceArray
-						year: req.query.year
-				.complete (err2, serviceData) ->
-					if !!err1 or !!err2 then send('Error - ' + err1 + err2, {}) 
-					else if serviceData.length == 0 then send("No Data", {})
-					else
-						detail = {}
-						detail.codeCount = serviceDetail.length
-						detail.catLevel = catLevel
-						if catLevel >= 1
-							detail.cat1 = serviceDetail[0].cat1
-							detail.label = serviceDetail[0].cat1
-						if catLevel >= 2
-							detail.cat2 = serviceDetail[0].cat2
-							detail.label = serviceDetail[0].cat2
-						if catLevel >= 3
-							detail.cat3 = serviceDetail[0].cat3
-							detail.label = serviceDetail[0].cat3
-						if catLevel >= 4
-							detail.cat4 = serviceDetail[0].cat4
-							detail.label = serviceDetail[0].cat4
-							detail.betosCode = serviceDetail[0].betosCode
-						if catLevel == 5
-							detail.description = serviceDetail[0].description
-							detail.label = serviceDetail[0].serviceCode
+					for service in serviceDetail
+						serviceArray.push service.serviceCode
 
-						data = []
-						serviceDescriptions = ["Top 3 Payer Payments","Top 3 Payer Claims"]
-						for description in serviceDescriptions
-							value=0
-							for datum in serviceData
-								if datum.description == description
-									value += Number(datum.value)
-							data.push
-								value:value
+					app.db.ServiceData.aggregate "value", "sum",
+						where:
+							serviceCode: serviceArray
+							year: req.query.year
+							description: "Top 3 Payer Payments"
+					.complete (err2, payments) ->
+
+						app.db.ServiceData.aggregate "value", "sum",
+							where:
+								serviceCode: serviceArray
 								year: req.query.year
-								description:description
-								
-						results=
-							data: data
-							detail: detail
+								description: "Top 3 Payer Claims"
 
-						sequelize.query("SELECT * FROM 'ServiceDetails'",{ type: sequelize.QueryTypes.SELECT})
-						.then (details) ->
-							console.log details
+						.complete (err3, claims) ->
 
-						send 'Affirmative', results
+							if !!err1 or !!err2 or !!err3 then send('Error - ' + err1 + err2 + err3, {}) 
+							else
+								detail = {}
+								detail.codeCount = serviceDetail.length
+								detail.catLevel = catLevel
+								if catLevel >= 1
+									detail.cat1 = serviceDetail[0].cat1
+									detail.label = serviceDetail[0].cat1
+								if catLevel >= 2
+									detail.cat2 = serviceDetail[0].cat2
+									detail.label = serviceDetail[0].cat2
+								if catLevel >= 3
+									detail.cat3 = serviceDetail[0].cat3
+									detail.label = serviceDetail[0].cat3
+								if catLevel >= 4
+									detail.cat4 = serviceDetail[0].cat4
+									detail.label = serviceDetail[0].cat4
+									detail.betosCode = serviceDetail[0].betosCode
+								if catLevel == 5
+									detail.description = serviceDetail[0].description
+									detail.label = serviceDetail[0].serviceCode
+										
+								results=
+									data: [
+										year: req.query.year
+										value: claims
+										description: "Top 3 Payer Claims"
+									,
+										year: req.query.year
+										value: payments
+										description: "Top 3 Payer Payments"
+									]
+									detail: detail
+
+								send 'Affirmative', results
+		else if req.query.catMap?
+			app.db.ServiceDetail.findAll()
+			.complete (err1, serviceDetailAll) ->
+				results = []
+				for detail in serviceDetailAll
+					results.push
+						serviceCode: detail.serviceCode
+						betosCode:detail.betosCode
+						cat1:detail.cat1
+						cat2:detail.cat2
+						cat3:detail.cat3
+						cat4:detail.cat4
+				send 'Affirmative', results
+		else send 'Invalid Query', []

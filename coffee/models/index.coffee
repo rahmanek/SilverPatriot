@@ -20,14 +20,15 @@ module.exports = (clean,callback) ->
 			port: dbInfo.dbPort
 
 		db =
-			Payer: require("./Payer.js")(sequelize,Sequelize)
-			Provider: require("./Provider.js")(sequelize,Sequelize)
-			Hospital: require("./Hospital.js")(sequelize,Sequelize)
 			ServiceDetail: require("./ServiceDetail.js")(sequelize,Sequelize)
 			ServiceData: require("./ServiceData.js")(sequelize,Sequelize)
 			RegionData: require("./RegionData.js")(sequelize,Sequelize)
 			RegionDetail: require("./RegionDetail.js")(sequelize,Sequelize)
-
+			ProviderData: require("./ProviderData.js")(sequelize,Sequelize)
+			ProviderDetail: require("./ProviderDetail.js")(sequelize,Sequelize)
+			sequeilze:sequelize
+			Sequelize:Sequelize
+			
 	sequelize.sync
 		force: clean
 	.complete (err) ->
