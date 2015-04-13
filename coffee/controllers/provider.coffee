@@ -12,22 +12,26 @@ module.exports = (app) ->
 			app.db.ProviderDetail.find
 				where:
 					orgId: req.query.orgId
-					
-			.complete (err,records) ->
-				directive = "Affirmative"
+			.then (records) ->
 
-				results = 
-					data:[]
-					detail: records
+				app.db.ProviderData.findAll
+					where:
+						providerId: req.query.orgId
+				.then (records2) ->
 
-				send directive, results
+					directive = "Affirmative"
+
+					results = 
+						data:records2
+						detail: records
+
+					send directive, results
 
 		else if req.query.region?
 			app.db.ProviderDetail.findAll
 				where:
 					region: req.query.region
-
-			.complete (err,records) ->
+			.then (records) ->
 				directive = "Affirmative"
 
 				results = 

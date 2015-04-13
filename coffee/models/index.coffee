@@ -26,13 +26,11 @@ module.exports = (clean,callback) ->
 			RegionDetail: require("./RegionDetail.js")(sequelize,Sequelize)
 			ProviderData: require("./ProviderData.js")(sequelize,Sequelize)
 			ProviderDetail: require("./ProviderDetail.js")(sequelize,Sequelize)
+			PayerDetail: require("./PayerDetail.js")(sequelize,Sequelize)
 			sequeilze:sequelize
 			Sequelize:Sequelize
-			
+
 	sequelize.sync
 		force: clean
-	.complete (err) ->
-		if !!err
-			console.log 'Database Failed to Authenticate'
-		else
-			callback db
+	.then () ->
+		callback db
