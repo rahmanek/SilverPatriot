@@ -9,3 +9,5 @@ module.exports = (sequelize, Sequelize) ->
 		zip:Sequelize.STRING
 		region:Sequelize.STRING
 		taxStatus:Sequelize.STRING
+		system:Sequelize.STRING
+		hospitalProfLinker:Sequelize.STRING

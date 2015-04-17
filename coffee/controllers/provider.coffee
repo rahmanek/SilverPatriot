@@ -39,3 +39,19 @@ module.exports = (app) ->
 					detail: records
 
 				send directive, results
+
+		else if req.query.description? and req.query.year?
+			app.db.ProviderDetail.findAll()
+			.then (records) ->
+				app.db.ProviderData.findAll
+					where:
+						description: req.query.description
+						calendarYear: req.query.year
+				.then (records2) ->
+					directive = "Affirmative"
+
+					results = 
+						data:records2
+						detail: records
+
+					send directive, results
