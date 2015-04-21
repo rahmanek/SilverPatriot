@@ -1,7 +1,6 @@
 
 module.exports = (app) ->
 
-	util = require('util')
 	app.Express.get '/service', (req, res) -> 
 		res.header("Access-Control-Allow-Origin", "*")
 
@@ -95,31 +94,28 @@ module.exports = (app) ->
 				semaphore = 0
 				resolve = () ->
 					if semaphore == 0
-						send "Ahoy", results
+						send "Affirmative", results
 				extractCategoryList = (level, catName) ->
 					nextLevelStr = "cat" + (level + 1)
 					if level == 4 then nextLevelStr = "serviceCode"
-					if level != 0
-						query = 
-							attributes: ["id", nextLevelStr]
-							where:{}
-						query.where["cat" + level] = catName
-					else
-						query = 
-							attributes: ["id", nextLevelStr]
-					app.db.ServiceDetail.findAll(query).then (serviceDetail) ->
+
+					whereQuery = " WHERE cat" + level + "='" + catName + "'"
+					if level == 0 then whereQuery = ""
+
+					buildQuery = "SELECT DISTINCT \"" + nextLevelStr + "\"" +
+						" FROM \"ServiceDetails\"" +
+						whereQuery
+
+					app.db.sequelize.query buildQuery
+					.then (queryResults) ->						
 						catList = []
-						for service in serviceDetail
-							match = false
-							for category in catList
-								if category == service[nextLevelStr]
-									match = true	
-							if !match
-								catList.push service[nextLevelStr]
+						for result in queryResults
+							catList.push result[nextLevelStr]
 
 						results[nextLevelStr] = catList
 						semaphore--
 						if semaphore == 0 then resolve()
+						
 				if req.query.baseCat
 					semaphore++
 					extractCategoryList 0, null				

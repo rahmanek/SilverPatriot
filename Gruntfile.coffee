@@ -19,5 +19,10 @@ module.exports = (grunt) ->
 					'dbLoader/app.js':'dbLoader/app.coffee'
 				]
 
+		watch:
+			files: ["coffee/**/*.coffee", "app.coffee"]
+			tasks: "default"
+
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
-	grunt.registerTask 'default', ['coffee']
+	grunt.loadNpmTasks 'grunt-contrib-watch'
+	grunt.registerTask 'default', ['coffee', 'watch']

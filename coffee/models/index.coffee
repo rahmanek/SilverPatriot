@@ -27,7 +27,7 @@ module.exports = (clean,callback) ->
 			ProviderData: require("./ProviderData.js")(sequelize,Sequelize)
 			ProviderDetail: require("./ProviderDetail.js")(sequelize,Sequelize)
 			PayerDetail: require("./PayerDetail.js")(sequelize,Sequelize)
-			sequeilze:sequelize
+			sequelize:sequelize
 			Sequelize:Sequelize
 
 	sequelize.sync

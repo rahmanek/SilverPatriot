@@ -13,10 +13,6 @@ database = require('./js/models/index.js') false, (db) ->
 		db: db
 		Express: Express
 
-	Express.get '/', (req, res) -> 
-		res.header("Access-Control-Allow-Origin", "*")
-		res.send "Root"
-
 	routes = require('./js/controllers/index.js')(app)
 
 	http.createServer(Express).listen Express.get('port'), () -> 
