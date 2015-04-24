@@ -1,4 +1,3 @@
 #Silver Patriot
 
-####Resource API
-
+####Data service RESTful API
